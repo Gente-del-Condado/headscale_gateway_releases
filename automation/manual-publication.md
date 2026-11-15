@@ -16,7 +16,9 @@ reemplazan por otros de contenido diferente.
 Desde la entrega 1.4.9, el control de
 [headscale_gateway_releases](https://github.com/Gente-del-Condado/headscale_gateway_releases/actions)
 compila en runners públicos estándar. Así no depende de la cuota de ejecución
-del espejo privado. Lee la API de Forgejo con un token limitado y descarga solo
+del espejo privado. Los publicadores anteriores del espejo están desactivados para evitar
+entregas duplicadas; la comprobación de calidad de pull requests se conserva.
+Lee la API de Forgejo con un token limitado y descarga solo
 el árbol de fuentes de la etiqueta publicada; no copia el historial privado.
 
 Sus fuentes se mantienen primero en `packaging/releases/automation/` y
