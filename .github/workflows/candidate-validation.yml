@@ -64,7 +64,8 @@ jobs:
         working-directory: source
         run: |
           docker build -t hgw-candidate-ha addons/headscale_gateway
-          docker run --rm --cpus 2 --memory 2g -v "$PWD/tools/check_container.py:/check.py:ro" -v "$PWD/addons/headscale_gateway/config.yaml:/addon-config.yaml:ro" --entrypoint python3 hgw-candidate-ha /check.py
+          docker network create --subnet 172.30.32.0/24 hgw-candidate-test
+          docker run --rm --network hgw-candidate-test --ip 172.30.32.2 --add-host supervisor:127.0.0.1 --cpus 2 --memory 2g -v "$PWD/tools/check_container.py:/check.py:ro" -v "$PWD/addons/headscale_gateway/config.yaml:/addon-config.yaml:ro" --entrypoint python3 hgw-candidate-ha /check.py
           docker build -f tests/containers/yunohost-sso.Dockerfile -t hgw-candidate-ynh yunohost
           docker run --rm --cpus 2 --memory 1g -v "$PWD/tools/check_yunohost_sso.py:/check_yunohost_sso.py:ro" hgw-candidate-ynh
   windows:
