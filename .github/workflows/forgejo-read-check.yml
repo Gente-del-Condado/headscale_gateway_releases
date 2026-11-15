@@ -1,0 +1,27 @@
+name: Verificar lectura privada de Forgejo
+'on':
+  push:
+    branches: [main]
+    paths: ['automation/forgejo_source.py', '.github/workflows/forgejo-read-check.yml']
+permissions:
+  contents: read
+jobs:
+  source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ github.token }}
+      FORGEJO_RELEASE_READ_TOKEN: ${{ secrets.FORGEJO_RELEASE_READ_TOKEN }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Seleccionar la release estable sin leer el historial privado
+        id: release
+        run: python3 automation/forgejo_source.py --plan
+      - name: Descargar y verificar el commit publicado
+        if: steps.release.outputs.source_sha != ''
+        env:
+          SOURCE_SHA: ${{ steps.release.outputs.source_sha }}
+          RELEASE_VERSION: ${{ steps.release.outputs.version }}
+        run: python3 automation/forgejo_source.py --sha "$SOURCE_SHA" --version "$RELEASE_VERSION" --destination "$RUNNER_TEMP/source"
