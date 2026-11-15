@@ -128,7 +128,9 @@ def fetch(sha,version,destination):
     if (root/'VERSION').read_text().strip()!=version:raise ValueError('La versión etiquetada no coincide con VERSION')
     # Los publicadores usan git archive; este repositorio efímero tiene un único
     # commit de fuentes, sin padres ni historial privado. No se publica como espejo.
-    def git(*args):subprocess.run(['git','-C',str(root),*args],check=True,stdout=subprocess.DEVNULL)
+    timestamp=str(int((root/'VERSION').stat().st_mtime))+' +0000'
+    environment=dict(os.environ,GIT_AUTHOR_DATE=timestamp,GIT_COMMITTER_DATE=timestamp)
+    def git(*args):subprocess.run(['git','-C',str(root),*args],check=True,env=environment,stdout=subprocess.DEVNULL)
     git('init','-b','source');git('config','core.autocrlf','false');git('config','user.name','github-actions[bot]');git('config','user.email','41898282+github-actions[bot]@users.noreply.github.com')
     git('add','--all');git('commit','-m','Fuentes de '+sha)
     subprocess.run(['python',str(root/'tools/prepare_git_install.py'),'--check'],check=True)

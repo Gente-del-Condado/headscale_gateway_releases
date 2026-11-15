@@ -67,3 +67,42 @@ class SourceContracts(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+class PublicationContracts(unittest.TestCase):
+    def publisher(self):
+        module_spec = importlib.util.spec_from_file_location('public_controller_publish', Path(__file__).with_name('publish_public.py'))
+        module = importlib.util.module_from_spec(module_spec)
+        module_spec.loader.exec_module(module)
+        return module
+
+    def test_metadata_preserves_controller_and_unmanaged_files(self):
+        module = self.publisher()
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            metadata = root / 'metadata'
+            metadata.mkdir()
+            for name in ['README.md', 'LICENSE', 'NOTICE', 'icon.png']:
+                (metadata / name).write_text('new')
+            def clone(arguments, cwd):
+                destination = Path(arguments[-1])
+                (destination / '.github/workflows').mkdir(parents=True)
+                (destination / '.github/workflows/release-public.yml').write_text('keep-workflow')
+                (destination / 'automation').mkdir()
+                (destination / 'automation/forgejo_source.py').write_text('keep-reader')
+                (destination / 'unmanaged').write_text('keep-other')
+            def inspect(destination, version):
+                self.assertEqual((destination / '.github/workflows/release-public.yml').read_text(), 'keep-workflow')
+                self.assertEqual((destination / 'automation/forgejo_source.py').read_text(), 'keep-reader')
+                self.assertEqual((destination / 'unmanaged').read_text(), 'keep-other')
+                self.assertEqual((destination / 'README.md').read_text(), 'new')
+            with patch.object(module, 'run', side_effect=clone), patch.object(module, 'commit_and_push', side_effect=inspect):
+                module.synchronize_controller(module.GENERAL, metadata, '1.4.9')
+
+    def test_metadata_rejects_unexpected_files_and_destinations(self):
+        module = self.publisher()
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / 'unexpected').write_text('no')
+            for repository in [module.GENERAL, 'another/repository']:
+                with self.subTest(repository=repository), self.assertRaises(ValueError):
+                    module.synchronize_controller(repository, root, '1.4.9')

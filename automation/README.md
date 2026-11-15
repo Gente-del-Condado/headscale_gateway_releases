@@ -32,3 +32,31 @@ HTTP detienen la ejecución sin imprimir tokens. Las compilaciones y sus fuentes
 correspondientes se preparan en runners públicos estándar de GitHub; el principal
 y su historial permanecen privados. La comprobación inicial de lectura por sí
 sola no afirma que una release ya se haya compilado o publicado.
+
+## Compilación y publicación
+
+`Compilar y publicar desde Forgejo` se activa con cambios del controlador y
+consulta Forgejo cada hora (minuto 17 UTC). No requiere lanzar flujos a mano.
+Una etiqueta sola no publica: debe existir una release estable de Forgejo.
+La versión y el commit se fijan al comienzo; cada trabajo vuelve a comprobarlos.
+
+Las comprobaciones de seguridad Go/npm, Go/JS/Python, Debian, Windows, integración
+Home Assistant y contenedores preceden a la compilación de entrega. Después se
+construyen Android con la firma estable y Lint, los seis motores, bandejas,
+Debian/Fedora, fuentes correspondientes, Flatpak y el manual estricto. Solo
+entonces se entregan los resultados a los seis repositorios públicos. El AAB
+se prepara, pero no se envía a Play Store. Tampoco se solicita Flathub.
+
+La rama de cada tienda conserva las otras aplicaciones. El repositorio de
+descargas conserva su propio controlador. Las sumas se comprueban antes de
+publicar y las descargas se verifican sin credenciales. No se reemplaza un
+archivo publicado con contenido diferente. Un recibo al final de la release
+evita reconstruir versiones ya completadas. Si un intento publica parcialmente
+y falla, revisar y recuperar sus resultados: no mover etiquetas ni sustituir
+archivos para ocultar el fallo.
+
+GitHub desactiva las programaciones de repositorios públicos tras 60 días sin
+actividad. Si el proyecto queda inactivo tanto tiempo, el mantenedor debe
+reactivar el flujo. Las compilaciones usan runners estándar públicos y no
+consumen la cuota de ejecución del espejo privado. No se suben grandes
+artefactos intermedios a Actions; los resultados se publican como releases.
