@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Lee una release estable y sus fuentes sin exponer el historial del principal."""
-import argparse,json,os,re,shutil,subprocess,tarfile,tempfile,urllib.error,urllib.request
+import argparse,hashlib,json,os,re,shutil,subprocess,sys,tarfile,tempfile,urllib.error,urllib.request
 from pathlib import Path,PurePosixPath
 
 OWNER='Gente-del-Condado'
@@ -110,6 +110,21 @@ def extract_archive(archive,destination):
             os.utime(target,(member.mtime,member.mtime))
 
 
+def verify_manifest(root):
+    """Normaliza rutas de Windows; conserva las sumas originales de cada archivo."""
+    root=Path(root)
+    sys.path.insert(0,str(root/'tools'))
+    from prepare_git_install import input_hashes,output_hashes
+    manifest=json.loads((root/'git-install-manifest.json').read_text())
+    def portable(values):return {name.replace('\\','/'):value for name,value in values.items()}
+    if manifest.get('format')!=1 or not manifest.get('outputs'):
+        raise ValueError('Manifiesto de instaladores no válido')
+    if portable(output_hashes(root))!=manifest['outputs']:
+        raise ValueError('Los instaladores extraídos no coinciden con el manifiesto')
+    if portable(input_hashes(root))!=manifest['inputs'] or manifest['version']!=(root/'VERSION').read_text().strip():
+        raise ValueError('Los instaladores no corresponden a los fuentes etiquetados')
+
+
 def fetch(sha,version,destination):
     if not re.fullmatch(r'[0-9a-f]{40}',sha) or not re.fullmatch(r'[0-9]+\.[0-9]+\.[0-9]+',version):raise ValueError('Referencia no válida')
     release=forgejo_json('/releases/tags/v'+version);validate_release(release)
@@ -131,9 +146,9 @@ def fetch(sha,version,destination):
     timestamp=str(int((root/'VERSION').stat().st_mtime))+' +0000'
     environment=dict(os.environ,GIT_AUTHOR_DATE=timestamp,GIT_COMMITTER_DATE=timestamp)
     def git(*args):subprocess.run(['git','-C',str(root),*args],check=True,env=environment,stdout=subprocess.DEVNULL)
-    git('init','-b','source');git('config','core.autocrlf','false');git('config','user.name','github-actions[bot]');git('config','user.email','41898282+github-actions[bot]@users.noreply.github.com')
+    git('init','-b','source');git('config','core.autocrlf','false');git('config','core.eol','lf');git('config','user.name','github-actions[bot]');git('config','user.email','41898282+github-actions[bot]@users.noreply.github.com')
     git('add','--all');git('commit','-m','Fuentes de '+sha)
-    subprocess.run(['python',str(root/'tools/prepare_git_install.py'),'--check'],check=True)
+    verify_manifest(root)
     print('FUENTES_FORGEJO_VERIFICADOS: '+version+' '+sha+'; sin historial privado')
 
 
