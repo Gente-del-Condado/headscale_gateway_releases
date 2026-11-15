@@ -60,3 +60,12 @@ actividad. Si el proyecto queda inactivo tanto tiempo, el mantenedor debe
 reactivar el flujo. Las compilaciones usan runners estándar públicos y no
 consumen la cuota de ejecución del espejo privado. No se suben grandes
 artefactos intermedios a Actions; los resultados se publican como releases.
+
+## Guía vigente del control
+
+La exportación de mantenimiento copia `docs/PUBLICACION.md` del principal como
+`automation/manual-publication.md` en el control público. Es un derivado; el texto
+se edita una sola vez en docs/. Tras una entrega completada, el flujo del manual
+superpone esa guía al árbol de documentación de la release, valida todos los
+enlaces y actualiza las dos ramas gh-pages. Los fuentes y los instaladores de la
+entrega conservan sus archivos originales. Este trabajo no compila el motor.

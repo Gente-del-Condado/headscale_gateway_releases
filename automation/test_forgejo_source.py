@@ -65,9 +65,6 @@ class SourceContracts(unittest.TestCase):
             self.assertFalse(source.completed('1.4.9', sha))
 
 
-if __name__ == '__main__':
-    unittest.main()
-
 class PublicationContracts(unittest.TestCase):
     def publisher(self):
         module_spec = importlib.util.spec_from_file_location('public_controller_publish', Path(__file__).with_name('publish_public.py'))
@@ -106,3 +103,24 @@ class PublicationContracts(unittest.TestCase):
             for repository in [module.GENERAL, 'another/repository']:
                 with self.subTest(repository=repository), self.assertRaises(ValueError):
                     module.synchronize_controller(repository, root, '1.4.9')
+
+
+class PortableManifestContracts(unittest.TestCase):
+    def test_windows_paths_preserve_manifest_hashes(self):
+        import json
+        import types
+        manifest = {'format': 1, 'version': '1.4.9', 'inputs': {'src/main.go': 'source-hash'}, 'outputs': {'yunohost/payload/engine': 'payload-hash'}}
+        helpers = types.SimpleNamespace(input_hashes=lambda root: {'src\\main.go': 'source-hash'}, output_hashes=lambda root: {'yunohost\\payload\\engine': 'payload-hash'})
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            (root / 'VERSION').write_text('1.4.9')
+            (root / 'git-install-manifest.json').write_text(json.dumps(manifest))
+            with patch.dict('sys.modules', {'prepare_git_install': helpers}):
+                source.verify_manifest(root)
+                helpers.output_hashes = lambda root: {'yunohost\\payload\\engine': 'changed-payload'}
+                with self.assertRaises(ValueError):
+                    source.verify_manifest(root)
+
+
+if __name__ == '__main__':
+    unittest.main()
