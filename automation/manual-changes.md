@@ -1,5 +1,10 @@
 # Cambios de Headscale Gateway
 
+## Mantenimiento posterior a 1.4.17
+
+- Retención automática de dos versiones completas en GitHub y temporizador local para Forgejo.
+- Protección de todos los fuentes reutilizables Electron, versiones pendientes y referencias Git.
+
 ## 1.4.17
 
 - Publicación de mantenimiento: conserva el motor y la firma Android existentes.

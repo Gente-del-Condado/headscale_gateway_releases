@@ -1,11 +1,13 @@
 # Estado de desarrollo y siguiente entrega
 
-## 1.4.17: entrega de mantenimiento
+## 1.4.17: publicada y verificada
 
 La entrega incorpora la separación y reutilización de fuentes de Electron y las
 guías de descargas actualizadas. Conserva el motor común y la firma Android.
-La publicación exige la solicitud de fusión en Forgejo y todas las comprobaciones
-del compilador público; la versión declarada no acredita por sí sola su resultado.
+Se publicó por la solicitud #35 de Forgejo y el flujo público
+[43806752417](https://github.com/Gente-del-Condado/headscale_gateway_releases/actions/runs/43806752417)
+terminó correctamente, incluido Windows. Se verificaron 41 archivos accesibles,
+los seis destinos y ambos manuales. Electron reutilizó sus diez adjuntos existentes.
 Play Store permanece solo preparado.
 
 ## 1.4.16: publicada y verificada
@@ -82,3 +84,13 @@ dato de prueba), una barrera contra adjuntos de terceros mezclados y una
 comprobación pública que evita volver a preparar o subir un conjunto existente.
 El ensayo no cambia VERSION, crea etiquetas ni publica otra aplicación. Las
 guías vigentes se actualizan en ambas webs sin modificar los instaladores.
+
+
+## Retención automática posterior a 1.4.17
+
+La política y las pruebas están en `packaging/releases/automation/release_retention.py`.
+GitHub tiene un workflow propio para los cuatro destinos públicos. Forgejo se
+administra desde un temporizador local de YunoHost: su activación requiere ejecutar
+el instalador revisado y comprobar el informe real. Las releases Electron se
+excluyen de la limpieza; commits y etiquetas se conservan. No se cambia VERSION
+ni se reemplazan los instaladores para introducir este mantenimiento.
