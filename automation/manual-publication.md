@@ -89,6 +89,18 @@ publicar los instaladores; rechaza fuentes distintos y no reemplaza adjuntos.
 La release de dependencias no ocupa «Latest». La 1.4.16 conserva todos sus
 archivos y enlaces originales; la separación se aplica a las siguientes entregas. Solo el archivo grande de fuentes Chromium usa partes.
 Conserva esos fuentes y avisos al redistribuir el escritorio.
+No elimines una release de dependencias mientras existan instaladores que la
+referencien. Cada release tiene su propio `SHA256SUMS`: no intercambies el de
+Gateway con el de los fuentes de Electron.
+
+Antes de preparar otro conjunto, el workflow consulta de forma anónima el
+existente. Si coincide con el lock, omite por completo la preparación y subida.
+Solo un 404 de la release permite preparar uno nuevo; una suma distinta, un
+adjunto ausente o un error de acceso bloquean el proceso. El constructor y el
+publicador también rechazan los archivos de terceros en la carpeta de adjuntos
+de Gateway. El ensayo automatizado de una versión siguiente no crea etiquetas,
+no cambia `VERSION` y no publica una nueva aplicación.
+
 
 El mismo manual se genera desde las fuentes y se publica en gh-pages de YunoHost
 y Home Assistant. Android utiliza la dirección estable

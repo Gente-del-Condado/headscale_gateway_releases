@@ -114,7 +114,9 @@ def main():
         'yunohost':{f'headscale-gateway-yunohost-{version}.zip'},
         'homeassistant':{f'headscale-gateway-homeassistant-{version}.zip',f'headscale-gateway-hacs-{version}.zip'}}
     sources={f'headscale-gateway-go-sources-{version}.tar.gz',f'headscale-gateway-fuentes-publicos-{version}.zip'}
-    general={p.name for p in payload.iterdir() if p.is_file()}-{'SHA256SUMS'}-set.union(*platforms.values())
+    from desktop_sources import gateway_files
+    lock=json.loads((ROOT/'packaging/desktop/electron-sources.lock.json').read_text())
+    general={p.name for p in gateway_files(payload,lock)}-set.union(*platforms.values())
     groups={'general':general,'yunohost':platforms['yunohost']|sources,'homeassistant':platforms['homeassistant']|sources,'flatpak':sources}
     # El helper recibe GH_TOKEN del entorno efímero; el token no se escribe en URLs.
     gh('auth','setup-git')

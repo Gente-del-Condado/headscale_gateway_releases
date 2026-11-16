@@ -57,6 +57,25 @@ def references(lock):
             'lock': lock, 'sources': records}
 
 
+def gateway_files(folder, lock):
+    """Impide volver a mezclar fuentes de terceros con los adjuntos de Gateway."""
+    identity(lock)
+    names = {record['name'] for record in lock['sources']}
+    selected = []
+    for path in sorted(Path(folder).iterdir()):
+        if path.is_symlink():
+            raise ValueError('No se publican enlaces desde la entrega')
+        if not path.is_file():
+            continue
+        if path.name == 'desktop-sources' or any(
+                path.name == name or path.name == name + '.parts.json' or
+                path.name.startswith(name + '.part-') for name in names):
+            raise ValueError('Fuentes de terceros fuera de su release reutilizable: ' + path.name)
+        if path.name != 'SHA256SUMS':
+            selected.append(path)
+    return selected
+
+
 def prepare(sources, lock, destination):
     """No cambia un conjunto existente ni acepta fuentes de otra revisión."""
     document = references(lock)
