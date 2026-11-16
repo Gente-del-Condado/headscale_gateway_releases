@@ -81,8 +81,13 @@ privado. Su main contiene solo el paquete YunoHost. Los binarios del motor y sus
 fuentes correspondientes se sirven desde `server-vX.Y.Z` en ese mismo destino.
 
 Los instaladores de bandeja son archivos pequeños completos. Los fuentes exactos
-de Electron/Chromium/FFmpeg, sus parches, avisos y sumas se distribuyen aparte en
-la misma release pública. Solo el archivo grande de fuentes Chromium usa partes.
+de Electron/Chromium/FFmpeg, Node y NAN se distribuyen en una release propia
+`desktop-sources-electron-VERSION-HUELLA`, reutilizada mientras no cambie el lock.
+Se mantienen fuentes exactos, parches, avisos y sumas, con enlace desde cada
+instalador y release Gateway. El publicador comprueba el conjunto antes de
+publicar los instaladores; rechaza fuentes distintos y no reemplaza adjuntos.
+La release de dependencias no ocupa «Latest». La 1.4.16 conserva todos sus
+archivos y enlaces originales; la separación se aplica a las siguientes entregas. Solo el archivo grande de fuentes Chromium usa partes.
 Conserva esos fuentes y avisos al redistribuir el escritorio.
 
 El mismo manual se genera desde las fuentes y se publica en gh-pages de YunoHost

@@ -84,3 +84,26 @@ el proxy SSO de YunoHost y la aceptación del servicio nativo en un Windows
 desechable. Las pruebas del SCM solo se activan dentro de ese runner, nunca al
 hacer `go test` en el PC del usuario. La publicación estable mantiene su circuito
 independiente y sus comprobaciones obligatorias.
+
+## Fuentes reutilizables de escritorio
+
+Las nuevas versiones separan los archivos grandes en una release
+`desktop-sources-electron-VERSION-HUELLA` del mismo repositorio público. La huella
+procede del lock completo y de la fragmentación; la publicación rechaza cambios
+de contenido y conserva «Latest» para la aplicación. La 1.4.16 no pierde archivos.
+
+Durante la exportación de mantenimiento se copian también:
+
+- `tools/desktop_sources.py` → `automation/desktop_sources.py`.
+- `tools/split_release.py` → `automation/split_release.py`.
+- `tools/publish_public_release.py` → `automation/publish_public_release.py`.
+- `packaging/desktop/electron-sources.lock.json` → `automation/desktop-sources.lock.json`.
+
+El workflow `desktop-sources.yml` prepara el primer conjunto en un runner
+público, reutilizando los archivos verificables de la 1.4.16 sin editarlos. Para
+un futuro lock ausente en aquella release obtiene fuentes upstream por HTTPS y
+exige los tamaños y SHA-256 fijados. Las publicaciones normales preparan el
+conjunto desde los fuentes del runtime, lo contrastan y reutilizan la release
+existente sin volver a subir GB. La primera publicación verifica las descargas
+anónimas completas; las reutilizaciones comprueban los digest de todos los
+adjuntos y descargan anónimamente índice y sumas. Un fallo bloquea instaladores.

@@ -19,7 +19,10 @@ separa estas funciones:
 - **fdroid-unsigned.apk** y **play.aab**: preparación de canales, no envío a las tiendas.
 
 Los instaladores pequeños de bandeja no requieren unir partes. Los fuentes de
-Electron, Chromium y FFmpeg se descargan aparte desde **la misma release**.
+Electron, Chromium (incluido FFmpeg), Node y NAN se descargan desde una
+**release reutilizable de dependencias**, enlazada en las notas y en
+`legal/PUBLIC-SOURCES.json` de cada bandeja. No hacen falta para instalar Gateway.
+La 1.4.16 conserva sus archivos originales y enlaces de compatibilidad.
 Solo el archivo grande de fuentes Chromium se divide en `.part-01`, `.part-02`,
 …; une sus partes en orden y comprueba el SHA-256 del JSON antes de extraerlo.
 Conserva los avisos y los fuentes correspondientes al redistribuir el programa.
