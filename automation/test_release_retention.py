@@ -1,5 +1,7 @@
 """La retención no destruye fuentes compartidos, entregas incompletas ni referencias Git."""
 import hashlib
+import io
+from contextlib import redirect_stdout
 import importlib.util
 import json
 from pathlib import Path
@@ -86,7 +88,8 @@ class RetentionTest(unittest.TestCase):
         self.assertFalse(any(len(c.args) > 1 for c in client.request.call_args_list))
         client.request.reset_mock()
         client.request.side_effect = [old[0], old[1], old[0], None, old[1], None]
-        removed = retention.execute(client, report)
+        with redirect_stdout(io.StringIO()):
+            removed = retention.execute(client, report)
         self.assertEqual(len(removed), 2)
         deletes = [c.args for c in client.request.call_args_list if len(c.args) > 1]
         self.assertEqual(len(deletes), 2)

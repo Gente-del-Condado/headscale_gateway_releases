@@ -63,6 +63,7 @@ class API:
                     raise ValueError('Respuesta de API demasiado grande')
                 return json.loads(raw)
         except urllib.error.HTTPError as error:
+            error.close()
             # No imprimir cabeceras, cuerpo ni errores remotos que puedan contener secretos.
             raise ValueError('Fallo de API ' + self.forge + ': HTTP ' + str(error.code)) from None
         except urllib.error.URLError:

@@ -2,6 +2,8 @@
 
 ## Mantenimiento posterior a 1.4.17
 
+- Diagnóstico de instalación por etapa y código HTTP, sin revelar credenciales.
+
 - Retención automática de dos versiones completas en GitHub y temporizador local para Forgejo.
 - Protección de todos los fuentes reutilizables Electron, versiones pendientes y referencias Git.
 
