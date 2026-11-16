@@ -1,5 +1,15 @@
 # Validación y límites
 
+## Preparación de 1.4.17
+
+Comprobaciones locales completadas: `tools/verify.sh` (100 pruebas Python,
+Go, JavaScript, vet y compilación), 9 pruebas del controlador, generados y
+versiones coherentes, privacidad y manual estricto (50 páginas, 3167 enlaces).
+La consulta anónima confirmó el conjunto Electron existente con el mismo lock,
+sin subidas. Las compilaciones nativas y la publicación final se verifican en
+el flujo público; estos controles locales no equivalen a una nueva prueba en VM.
+Play Store permanece solo preparado.
+
 ## Revisión 1.4.16 publicada
 
 La revisión actual limpia resultados locales y documentación, añade controles

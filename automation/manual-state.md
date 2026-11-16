@@ -1,5 +1,13 @@
 # Estado de desarrollo y siguiente entrega
 
+## 1.4.17: entrega de mantenimiento
+
+La entrega incorpora la separación y reutilización de fuentes de Electron y las
+guías de descargas actualizadas. Conserva el motor común y la firma Android.
+La publicación exige la solicitud de fusión en Forgejo y todas las comprobaciones
+del compilador público; la versión declarada no acredita por sí sola su resultado.
+Play Store permanece solo preparado.
+
 ## 1.4.16: publicada y verificada
 
 La 1.4.16 se publicó mediante la solicitud #32 de Forgejo y se replicó en
