@@ -155,3 +155,27 @@ principales; el historial privado no se publica. Una validación correcta activa
 el flujo de imágenes automáticamente mediante workflow_run. Los recibos de
 `.sources/` evitan repetir fuentes. No depende de la facturación de Actions de
 los espejos privados y no modifica el recorrido de las integraciones de sensores.
+
+
+## Actions simplificadas
+
+La tienda pública comprueba primero SHA y recibos de PiVigia/JackSignal. Una
+consulta sin cambios no descarga fuentes ni ejecuta calidad/publicación. Las
+integraciones se exportan con sumas y se publican en sus repositorios dedicados
+y Mis_componente_ha; los demás proyectos se conservan. DISTRIBUTION_TOKEN concede
+Contents de escritura únicamente a esos tres destinos públicos. Los secretos
+anteriores de los principales privados no se reutilizan ni se extraen.
+
+Los antiguos publicadores privados se retiran cuando este recorrido ha pasado
+sus pruebas. La CI de los espejos queda para pull requests y ensayos manuales,
+sin duplicar cada réplica de main. Headscale conserva las pruebas nativas de
+Windows, Debian, Android, integración HA y contenedores; verify.sh se ejecuta una
+vez por revisión y los paquetes dependen de su resultado.
+
+El manual y la retención GitHub son workflows reutilizables invocados después
+de una publicación real, sin engancharse al éxito de un plan sin cambios. Las
+guías se actualizan también por cambios documentales, excluidos del disparador
+del compilador. La retención conserva su tarea diaria y las protecciones de
+fuentes Electron. Esta simplificación no activa la limpieza local de YunoHost
+cancelada anteriormente. La lectura de Forgejo queda como diagnóstico manual y
+se retira la comprobación inicial que solo imprimía el estado del runner.
