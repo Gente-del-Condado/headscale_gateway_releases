@@ -146,3 +146,12 @@ forzar actualizaciones ni reinstalaciones de los equipos existentes.
 El controlador común se mantiene en `packaging/homeassistant-store/` de
 `headscale_gateway` en Forgejo y se exporta a `.github/ha-images/` y al workflow
 de `Mis_app_ha`. No escribe en los principales ni devuelve cambios a Forgejo.
+
+PiVigia y JackSignal también tienen comprobaciones públicas en la tienda:
+`Verificar aplicaciones desde Forgejo` consulta su main cada hora, valida el SHA,
+ejecuta seguridad y las pruebas originales sin credenciales y prepara solo su
+aplicación. Requiere `FORGEJO_APPS_READ_TOKEN` de solo lectura, limitado a ambos
+principales; el historial privado no se publica. Una validación correcta activa
+el flujo de imágenes automáticamente mediante workflow_run. Los recibos de
+`.sources/` evitan repetir fuentes. No depende de la facturación de Actions de
+los espejos privados y no modifica el recorrido de las integraciones de sensores.
