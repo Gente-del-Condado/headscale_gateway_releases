@@ -119,48 +119,6 @@ nginx/NSS en contenedor son complementarias; no equivalen a repetir package_chec
 o la actualización de una instalación real con datos y secretos. No ejecutes
 máquinas virtuales ni compilaciones grandes en el Linux del usuario.
 
-## Limpieza automática de releases antiguas
-
-Se conservan las dos últimas versiones completadas y verificadas. La limpieza
-retira releases anteriores y sus adjuntos; mantiene commits, ramas y etiquetas.
-Las URL de releases retiradas dejan de descargar. Los archivos de las dos
-versiones conservadas permanecen intactos.
-
-GitHub limpia los cuatro destinos de descargas mediante un workflow separado,
-después de una entrega correcta y diariamente. Forgejo utiliza un temporizador
-local de YunoHost y una credencial limitada al principal, guardada solo allí.
-GitHub no escribe en Forgejo. Las tiendas compartidas y las demás aplicaciones
-no se modifican.
-
-Las releases de fuentes Electron **nunca se borran automáticamente**, incluidas
-las de runtimes anteriores: siguen disponibles para los instaladores conservados
-y las redistribuciones. Borradores, prereleases, entregas pendientes, releases
-inmutables y nombres no reconocidos se protegen. Una entrega fallida no desplaza
-las dos versiones completas. Si no se pueden verificar las sumas o la existencia
-de las distribuciones conservadas, no se inicia el borrado.
-
-Desde el principal revisado, prepara el instalador sin credenciales y ejecútalo:
-
-```sh
-python3 -B tools/prepare_release_retention.py --output /tmp/hgw-release-retention
-bash /tmp/hgw-release-retention/bootstrap.sh
-```
-
-En Forgejo, crea un token limitado al principal con `repository` de lectura y
-escritura. El instalador lo pide de forma oculta en la terminal y lo conserva
-en YunoHost, en `/etc/hgw-release-retention/forgejo-token` (root, 0600).
-SSH y sudo se autentican solo en esa terminal. El servicio utiliza
-`LoadCredential`, se ejecuta con usuario dinámico y reintenta fallos cada 15
-minutos; el temporizador diario recupera una ejecución perdida al arrancar.
-
-La activación requiere `RETENCION_FORGEJO_AUTOMATICA_OK` tras una ejecución real.
-Preparar sus archivos no equivale a tenerlo instalado. Consulta en YunoHost
-`sudo systemctl list-timers forgejo-retention.timer` y
-`sudo journalctl -u forgejo-retention.service`. Para detener solo la limpieza,
-deshabilita ese temporizador y detén ese servicio; Forgejo continúa funcionando.
-La guía de mantenimiento completa también se conserva junto al instalador
-en `packaging/maintenance/release-retention/README.md` del principal.
-
 ## PiVigia y JackSignal
 
 Sus flujos reciben el espejo desde Forgejo y publican directamente en GitHub
@@ -168,3 +126,23 @@ tras calidad correcta del mismo SHA de main. Los pull requests no publican.
 Sus secretos PUBLICATION_TOKEN permanecen en los respectivos principales
 privados, limitados a sus destinos públicos. Esta migración del compilador de
 Headscale no cambia sus credenciales ni sus flujos.
+
+
+## Imágenes precompiladas de Home Assistant
+
+Forgejo sigue siendo el origen y GitHub el espejo. El publicador entrega el
+contenido aprobado a `build-source` de `Mis_app_ha`. Un único workflow de esa
+tienda construye imágenes nativas `amd64` y `aarch64`, ejecuta las pruebas de
+arranque con datos desechables y crea un índice multi arquitectura en GHCR.
+Solo después de verificar su descarga anónima actualiza la aplicación en `main`
+y añade `image:`. La versión anterior sigue instalable mientras se prepara la nueva.
+
+Los Dockerfile y fuentes se conservan; Home Assistant descarga la imagen preparada.
+No se cambian slugs, opciones, volúmenes, permisos, datos ni credenciales. Una imagen
+ya distribuida no se sustituye con otro contenido: aumenta la versión al cambiar
+el contexto de compilación. El cambio inicial publica las versiones actuales sin
+forzar actualizaciones ni reinstalaciones de los equipos existentes.
+
+El controlador común se mantiene en `packaging/homeassistant-store/` de
+`headscale_gateway` en Forgejo y se exporta a `.github/ha-images/` y al workflow
+de `Mis_app_ha`. No escribe en los principales ni devuelve cambios a Forgejo.
