@@ -121,12 +121,12 @@ máquinas virtuales ni compilaciones grandes en el Linux del usuario.
 
 ## PiVigia y JackSignal
 
-Sus flujos reciben el espejo desde Forgejo y publican directamente en GitHub
-tras calidad correcta del mismo SHA de main. Los pull requests no publican.
-Sus secretos PUBLICATION_TOKEN permanecen en los respectivos principales
-privados, limitados a sus destinos públicos. Esta migración del compilador de
-Headscale no cambia sus credenciales ni sus flujos.
-
+Forgejo conserva los dos principales privados y GitHub sus espejos. La tienda
+pública consulta el SHA de main y ejecuta calidad sin credenciales antes de
+preparar aplicaciones e integraciones. Las distribuciones dedicadas y
+Mis_componente_ha se publican con DISTRIBUTION_TOKEN, limitado a esos tres
+destinos públicos. Los pull requests no publican y no hay escritura de regreso
+a Forgejo. Los publicadores antiguos de los espejos se han retirado.
 
 ## Imágenes precompiladas de Home Assistant
 
@@ -147,15 +147,12 @@ El controlador común se mantiene en `packaging/homeassistant-store/` de
 `headscale_gateway` en Forgejo y se exporta a `.github/ha-images/` y al workflow
 de `Mis_app_ha`. No escribe en los principales ni devuelve cambios a Forgejo.
 
-PiVigia y JackSignal también tienen comprobaciones públicas en la tienda:
-`Verificar aplicaciones desde Forgejo` consulta su main cada hora, valida el SHA,
-ejecuta seguridad y las pruebas originales sin credenciales y prepara solo su
-aplicación. Requiere `FORGEJO_APPS_READ_TOKEN` de solo lectura, limitado a ambos
-principales; el historial privado no se publica. Una validación correcta activa
-el flujo de imágenes automáticamente mediante workflow_run. Los recibos de
-`.sources/` evitan repetir fuentes. No depende de la facturación de Actions de
-los espejos privados y no modifica el recorrido de las integraciones de sensores.
-
+`Verificar aplicaciones desde Forgejo` consulta main cada hora con
+FORGEJO_APPS_READ_TOKEN de solo lectura. El plan compara los recibos antes de
+descargar los proyectos. Una validación correcta publica los contextos y llama
+al workflow reutilizable de imágenes solo cuando hay árboles pendientes. Así
+funciona también con commits escritos por GITHUB_TOKEN y se recuperan intentos
+de imágenes fallidos sin repetir la calidad ya validada.
 
 ## Actions simplificadas
 

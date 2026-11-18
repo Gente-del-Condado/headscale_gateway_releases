@@ -9,6 +9,14 @@ etiquetas inmutables, conservación de otros componentes y planificación sin
 cambios. Los flujos antiguos se retiran por solicitudes de fusión en el origen.
 El manual sigue privado en Olivar y no se activa ningún servicio de laboratorio.
 
+Comprobado el flujo público [44213839402](https://github.com/Gente-del-Condado/Mis_app_ha/actions/runs/44213839402):
+PiVigia y JackSignal superaron calidad; se publicaron sus dos distribuciones y
+las dos carpetas del catálogo con recibos de SHA y versión. No hubo imágenes
+pendientes y el trabajo de imágenes se omitió. Los ensayos locales pasaron 100
+pruebas generales, 18 del controlador de tienda y 21 del controlador de releases;
+el manual estricto pasó 50 páginas y 3171 enlaces. Estas pruebas de mantenimiento
+no equivalen a actualizar instalaciones reales de las aplicaciones.
+
 ## 1.4.17: entrega de mantenimiento
 
 La entrega incorpora la separación y reutilización de fuentes de Electron y las
